@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+zillow-data-analysis-ec2-key-pair.pem
+
 # C extensions
 *.so
 
