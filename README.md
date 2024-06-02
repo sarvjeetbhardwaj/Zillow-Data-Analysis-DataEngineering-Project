@@ -4,7 +4,7 @@ After the data is loaded into aws redshift, then we will connect amazon quicksig
 
 # TechStack Used
     - Python
-    - Airflow
+    - Apache Airflow
     - AWS S3
     - AWS Lambda
     - AWS EC2- t2.medium, ubuntu
@@ -24,11 +24,20 @@ After the data is loaded into aws redshift, then we will connect amazon quicksig
         - source zillowdataanalysis/bin/activate
     4. Install awscli and apache-airflow
         - pip3 install awscli apache-airflow
+        - pip3 install apache-airflow-providers-amazon
     5. Initialize airflow
         - airflow standalone
     6. Login to the airflow UI using the public EC2 IPv4.
-    7. Connect the code editor(in this case vs code) to ec2 instance .
+    7. Connect the code editor(in this case vscode) to ec2 instance .
         Refer to - https://www.youtube.com/results?search_query=how+to+connect+ec2+instance+to+vscode
     8. Get zillow API from Rapid API hub - https://rapidapi.com/s.mahmoud97/api/zillow56
+    9. After cinnecting VScode to ec2 instance , create folder zillowanalytics.py in airflow/dags     folder
+    10. Update zillowanalytics.py by creating following operators :
+         - PythonOperator - To extract data from Zillow API
+         - BashOperator - To push the output json file to S3 bucket (make sure to provide adequate    function to EC2 server to access S3 bucket)
+    11. Create a lambda function to create a copy of raw json record into another s3 bucket.
+    12. Create a lambda function to transform the json data to csv and load the into another s3 bucket (Install pre-requisite layers before creating a lambda function)
+    13. Create a DAG operator to check whether a csv file is present in S3 bucket or not:
+         - S3KeySensor - To check whether csv file is in required S3 bucket or not.(first configure the aws_s3_conn on airflow UI)
     
 
