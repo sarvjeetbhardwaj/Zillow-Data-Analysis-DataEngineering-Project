@@ -8,7 +8,7 @@ After the data is loaded into aws redshift, then we will connect amazon quicksig
     - AWS S3
     - AWS Lambda
     - AWS EC2- t2.medium, ubuntu
-    - AWS Redshift
+    - AWS Redshift - ra3.xlplus
     - Zillow RapidAPI
 
 # ArchitectureFlow
@@ -31,7 +31,7 @@ After the data is loaded into aws redshift, then we will connect amazon quicksig
     7. Connect the code editor(in this case vscode) to ec2 instance .
         Refer to - https://www.youtube.com/results?search_query=how+to+connect+ec2+instance+to+vscode
     8. Get zillow API from Rapid API hub - https://rapidapi.com/s.mahmoud97/api/zillow56
-    9. After cinnecting VScode to ec2 instance , create folder zillowanalytics.py in airflow/dags     folder
+    9. After connecting VScode to ec2 instance , create folder zillowanalytics.py in airflow/dags     folder
     10. Update zillowanalytics.py by creating following operators :
          - PythonOperator - To extract data from Zillow API
          - BashOperator - To push the output json file to S3 bucket (make sure to provide adequate    function to EC2 server to access S3 bucket)
@@ -39,5 +39,22 @@ After the data is loaded into aws redshift, then we will connect amazon quicksig
     12. Create a lambda function to transform the json data to csv and load the into another s3 bucket (Install pre-requisite layers before creating a lambda function)
     13. Create a DAG operator to check whether a csv file is present in S3 bucket or not:
          - S3KeySensor - To check whether csv file is in required S3 bucket or not.(first configure the aws_s3_conn on airflow UI)
+    14. Create a redshift cluster.In the redshift cluster create a table schema
+        CREATE TABLE IF NOT EXISTS zillowdata(
+        bathroom NUMERIC,
+        bedroom NUMERIC,
+        city VARCHAR(255),
+        homeStatus VARCHAR(255),
+        livingArea NUMERIC,
+        price NUMERIC,
+        rentZestimate NUMERIC,
+        zipcode INT)
+    14. Create following DAG operator to transfer processed file from S3 bucket to redshift cluster.Make sure to update connection parameters on airflow UI .
+    15. Add appropriate permission for EC2 to access Redshift cluster.
+    16. Make changes to accept Inbound traffic rule in security group of Redshift
+    17. Execute the dags from Airflow UI .
+    18. Once all the dags are successfully executed , you are see all the data in redshift via
+                  select * from zillowdata;
+    19. This data in redshift can be used for analysis using PowerBI , Tableau, QuickSight etc.
     
 
